@@ -4,3 +4,4 @@
 
 - Augusto Rustick
 - Nicolas Weber
+- Denis Zickuhr
