@@ -1,11 +1,15 @@
 package com.example.votacoes_app.model;
 
 import java.io.Serializable;
+import java.sql.SQLOutput;
 
 public class Reuniao implements Serializable {
 
-    private String id, conselho, data, hora, local, quorum, secretario;
+    private String id, conselho, data, local, quorum, secretario;
+    private String hora = "00:00";
+    private String horaFim = "23:59";
     private int status;
+    private int limiar = 0;
 
     public Reuniao() {
     }
@@ -18,6 +22,14 @@ public class Reuniao implements Serializable {
         this.quorum = quorum;
         this.secretario = secretario;
         this.status = 2;
+    }
+
+    public int getLimiar(){
+        return this.limiar;
+    }
+
+    public void setLimiar(int l){
+        this.limiar = l;
     }
 
     public String getConselho() {
@@ -41,7 +53,23 @@ public class Reuniao implements Serializable {
     }
 
     public void setData(String data) {
-        this.data = data;
+        try{
+        this.data = null;
+        if (!data.isEmpty()) {
+            String[] dataList = data.split("/");
+            if (dataList.length == 3 & dataList[0].length() == 2 & dataList[1].length() == 2 & dataList[2].length() == 2){
+
+                    int day = Integer.parseInt(dataList[0]);
+                    int month = Integer.parseInt(dataList[1]);
+                    int year = Integer.parseInt(dataList[2]);
+
+                    if ((day > 0 & 32 > day) & (month > 0 & 13 > month) & (year > 0 & 100 > year)){
+                        this.data = data;
+                    }
+                }
+            }
+        }catch (Exception ignore){
+        }
     }
 
     public String getHora() {
@@ -49,7 +77,73 @@ public class Reuniao implements Serializable {
     }
 
     public void setHora(String hora) {
-        this.hora = hora;
+        try{
+            this.hora = null;
+            if (!hora.isEmpty()) {
+                String[] horaList = hora.split(":");
+                if (horaList.length == 2 && horaList[0].length() == 2 && horaList[1].length() == 2){
+                    int hour;
+                    int min;
+
+                        hour = Integer.parseInt(horaList[0]);
+                        min = Integer.parseInt(horaList[1]);
+                        if ((hour >= 0 && 23 >= hour) && (min >= 0 && 59 >= min)){
+
+                            String horaIni = hora.replace(":", "");
+                            int horaIniNum = Integer.parseInt(horaIni);
+
+                            String horaFim = this.getHoraFim().replace(":", "");
+                            int horaFimNum = Integer.parseInt(horaFim);
+
+                            if (horaFimNum - this.getLimiar() > horaIniNum){
+                                this.hora = hora;
+                            }
+                        }
+                }
+            }
+        }catch(Exception ignore){
+        }
+    }
+
+    public void resetHora(){
+        this.hora = "00:00";
+    }
+
+    public void resetHoraFim(){
+        this.horaFim = "23:59";
+    }
+
+    public String getHoraFim() {
+        return horaFim;
+    }
+
+    public void setHoraFim(String hora) {
+        try{
+            this.horaFim = null;
+            if (!hora.isEmpty()) {
+                String[] horaList = hora.split(":");
+                if (horaList.length == 2 && horaList[0].length() == 2 && horaList[1].length() == 2){
+                    int hour;
+                    int min;
+
+                    hour = Integer.parseInt(horaList[0]);
+                    min = Integer.parseInt(horaList[1]);
+                    if ((hour >= 0 && 23 >= hour) && (min >= 0 && 59 >= min)){
+
+                        String horaIni = this.getHora().replace(":", "");
+                        int horaIniNum = Integer.parseInt(horaIni);
+
+                        String horaFim = hora.replace(":", "");
+                        int horaFimNum = Integer.parseInt(horaFim);
+
+                        if (horaFimNum - this.getLimiar() > horaIniNum){
+                            this.horaFim = hora;
+                        }
+                    }
+                }
+            }
+        }catch(Exception ignore){
+        }
     }
 
     public String getLocal() {
