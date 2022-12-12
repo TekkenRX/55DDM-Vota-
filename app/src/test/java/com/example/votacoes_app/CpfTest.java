@@ -28,7 +28,7 @@ public class CpfTest {
 
     @After
     public void tearDown() {
-
+        integrante.setCpf("");
     }
 
     @Test
